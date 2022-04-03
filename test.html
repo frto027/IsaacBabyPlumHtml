@@ -1,0 +1,97 @@
+<html>
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+<style>
+    .baby_plum_anim {
+        width: 64px;
+        height: 64px;
+        background-image: url("https://huiji-public.huijistatic.com/isaac/uploads/d/d0/BabyPlumSprite.png");
+        image-rendering: pixelated;
+    }
+
+    :root {
+        --plum_move_start: 0, 0;
+        --plum_move_end: 0, 0;
+        --plum_move_scale:1, 1;
+    }
+
+    .baby_plum_mover_attack1 {
+        animation: baby_plum_mover_attack1 1133.333333ms 1 ease-in-out;
+    }
+
+    @keyframes baby_plum_mover_attack1 {
+        0% {
+            transform: translate(var(--plum_move_start)) scale(var(--plum_move_scale));
+
+        }
+        100% {
+            transform: translate(var(--plum_move_end)) scale(var(--plum_move_scale));
+        }
+    }
+
+    .baby_plum_mover_attack2 {
+        animation: baby_plum_mover_attack2 1333.333333ms 1 ease-in-out;
+    }
+
+    @keyframes baby_plum_mover_attack2 {
+        0% {
+            transform: translate(var(--plum_move_start));
+        }
+        17.500000% {
+            transform: translate(var(--plum_move_start));
+        }
+        37.500000% {
+            transform: translate(var(--plum_move_end));
+        }
+        100% {
+            transform: translate(var(--plum_move_end));
+        }
+    }
+
+    .baby_plum_mover_bye {
+        animation: baby_plum_mover_bye 1933.333333ms 1 ease-in-out;
+    }
+
+    @keyframes baby_plum_mover_bye {
+        0% {
+            opacity: 100%;
+        }
+        70% {
+            opacity: 100%;
+        }
+        100% {
+            opacity: 0%;
+        }
+    }
+</style>
+
+<link rel="stylesheet" href="anim.css">
+
+<body>
+    <script>
+        huijiApp = {}
+        huijiApp.isApp = false
+        mw = {
+            config:{
+                get:()=>{}
+            }
+        }
+    </script>
+    <script type="text/javascript" src="plum.js"></script>
+    <script>
+        for(let i=0;i<200;i++){
+            setTimeout(()=>{
+                let p = new BabyPlum(Math.random() * document.body.clientWidth, Math.random() * document.body.clientHeight)
+                document.body.appendChild(p.element)
+                // p.c_randomWalk(0.8, ()=>{return {
+                //     x: ,
+                //     y: 
+                // }})
+            },Math.random() * 3000)
+        }
+    </script>
+</body>
+
+</html>
