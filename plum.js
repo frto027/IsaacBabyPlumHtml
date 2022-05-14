@@ -163,6 +163,58 @@ class BabyPlum {
 
     handleMove() {
         if (this.targetPos) {
+            /* 处理与迷失游魂的碰撞 */
+            {
+                /* 红胖苍蝇半径约64px ea宝半径约32px，碰撞判定为二者距离小于64+32px*/
+                let COLLISION_DISTANCE = 64+32
+
+                let MOVE_DURATION = 1133.333333
+
+                let x1 = this.currentPos.x + 32, y1 = this.currentPos.y + 32, x2 = this.targetPos.x + 32, y2 = this.targetPos.y + 32
+                let lost_souls = document.getElementsByClassName("lost_soul_helper")
+                if(lost_souls.length > 0){
+                    for(let i=0;i<lost_souls.length;i++){
+                        let soul = lost_souls[i]
+                        let x = soul.offsetLeft + 32,y=soul.offsetTop + 48
+                        
+                        /* 首先排除起点和终点 */
+                        let hurt_time = undefined
+                        if((x-x1)*(x-x1) + (y-y1)*(y-y1) < COLLISION_DISTANCE * COLLISION_DISTANCE){
+                            hurt_time = 0
+                        }else if((x-x2)*(x-x2) + (y-y2)*(y-y2) < COLLISION_DISTANCE * COLLISION_DISTANCE){
+                            hurt_time = MOVE_DURATION
+                        }else{
+                            //以x1 y1为起点，求指向x2 y2的单位向量
+                            let nx = x2 - x1, ny = y2 - y1
+                            let len = Math.sqrt(nx * nx + ny * ny)
+                            if(len >= 3){
+                                nx = nx / len
+                                ny = ny / len
+                                //px py是移动起点指向ea宝的向量
+                                let px = x - x1, py = y - y1
+                                let pos = px * nx + py * ny //点积 b cos(theta)
+                                let distance = nx * py - ny * px//叉积 b sin(theta)
+                                
+                                if(pos >= 0 && pos <= len){
+                                    //确保在移动向量内
+                                    if(Math.abs(distance) < COLLISION_DISTANCE){
+                                        //确保点线距离合适
+                                        hurt_time = pos * MOVE_DURATION / len
+                                    }
+                                }
+                            }else{
+                                //移动距离太短，什么都不做
+                            }
+                        }
+                        if(hurt_time != undefined && hurt_time == hurt_time /* nan != nan */){
+                            setTimeout(function(){
+                                soul.querySelector(".lost_soul_anm_FloatDown0").death=true
+                            },hurt_time)
+                        }
+                    }
+                }
+            }
+
             this.status = "move"
             this.element.style.setProperty("--plum_move_start", this.currentPos.x + "px," + this.currentPos.y + "px")
             this.element.style.setProperty("--plum_move_end", this.targetPos.x + "px," + this.targetPos.y + "px")
@@ -393,7 +445,7 @@ plum_leader.anmelement.addEventListener("click",function(){
             let infobox_pic = undefined
             for(let infobox of document.getElementsByClassName("infobox")){
                 for(let img of infobox.getElementsByTagName("img")){
-                    if(img.getAttribute("alt") == "Entity 908.0.png"){
+                    if(img.getAttribute("alt") == "Entity 908.0.0.png"){
                         infobox_pic = img
                         break
                     }
