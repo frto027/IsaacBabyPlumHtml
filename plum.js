@@ -426,7 +426,32 @@ function plum_baby_limit_to_screen(){
         window.baby_plum.c_goto(x,y)
 }
 
+plum_leader.active_status = "idle"// idle/timeout/actived
+
+setTimeout(function(){
+    if(plum_leader.active_status != "idle"){
+        return
+    }else{
+        plum_leader.active_status = "timeout"
+    }
+
+    plum_leader.c_goto(-100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))))
+    
+    setTimeout(function(){
+        plum_leader.remove()
+    },2000)
+},8*1000)
+
+
+
 plum_leader.anmelement.addEventListener("click",function(){
+    if(plum_leader.active_status != "idle"){
+        return
+    }else{
+        plum_leader.active_status = "actived"
+    }
+
+
     plum_leader.c_setBeforeChangeCallback(undefined)
     $(plum_leader.element).animate({top: -64})
     //争夺主动权
@@ -434,8 +459,8 @@ plum_leader.anmelement.addEventListener("click",function(){
     localStorage.setItem("plum_baby_window_active_time", local_active_time)
     
     setTimeout(function(){
-            //create plum
-            plum_leader.remove()
+        //create plum
+        plum_leader.remove()
 
         let p = new BabyPlum(100, 500 + (huijiApp.isApp ? -100 : 0), true)
         window.baby_plum = p
