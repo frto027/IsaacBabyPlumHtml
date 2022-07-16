@@ -208,7 +208,12 @@ class BabyPlum {
                         }
                         if(hurt_time != undefined && hurt_time == hurt_time /* nan != nan */){
                             setTimeout(function(){
-                                soul.querySelector(".lost_soul_anm_FloatDown0").death=true
+                                let s = soul.querySelector(".lost_soul_anm_FloatDown0")
+                                if(s == undefined){
+                                    //已经消失的灵魂
+                                    return
+                                }
+                                s.death=true
                                 // 小罗死了！仿steam成就弹窗，延迟一下，这样更像。
                                 setTimeout(function(){
                                     let achi=document.createElement('div')
@@ -495,6 +500,49 @@ plum_leader.anmelement.addEventListener("click",function(){
     localStorage.setItem("plum_baby_window_active_time", local_active_time)
     
     setTimeout(function(){
+        let date = new Date()
+        if(/*mw.config.get("wgPageName") == "挑战/32" || */(date.getMonth() == 3 && date.getDate() == 1 /* 4月1日限定*/)){
+            plum_leader.remove()
+
+            let p = []
+            window.baby_plums = p//留一个全局引用，作为接口
+            for(let i=0;i<30 /* 好多好多的大可爱 */;i++){
+                setTimeout(
+                    function(){
+                        let plum = new BabyPlum(Math.random() * (document.body.clientWidth - 200) + 100, 500 + (huijiApp.isApp ? -100 : 0), true)
+                        p.push(plum)
+
+                        let walk_func = function(){
+                            let height_min = 300, height_max = document.body.clientHeight - 300
+                            if(plum.currentPos.y - 500 > height_min)
+                                height_min = plum.currentPos.y - 500
+                            if(plum.currentPos.y + 500 < height_max)
+                                height_max = plum.currentPos.y + 500                        
+                            return {
+                                x: Math.random() * (document.body.clientWidth - 200) + 100,
+                                y: Math.random()  * (height_max - height_min) + height_min
+                            }
+                        }
+
+                        document.body.appendChild(plum.element)
+                        let hello_rate = Math.random()
+                        plum.c_randomHello(hello_rate * hello_rate * 0.95) /* 有一些大可爱会特别喜欢招手 */
+
+                        setTimeout(function(){
+                            let coord = walk_func()
+                            let walk_rate = Math.random()
+                            plum.c_goto(coord.x, coord.y)
+                            plum.c_randomWalk(walk_rate * 0.9 + 0.1 /* 但是有一些会喜欢到处乱跑 */, walk_func)
+                        },1500)
+
+
+                    },
+                    Math.random()*10000
+                )
+            }
+            return
+        }
+
         //create plum
         plum_leader.remove()
 
