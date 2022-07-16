@@ -209,6 +209,42 @@ class BabyPlum {
                         if(hurt_time != undefined && hurt_time == hurt_time /* nan != nan */){
                             setTimeout(function(){
                                 soul.querySelector(".lost_soul_anm_FloatDown0").death=true
+                                // 小罗死了！仿steam成就弹窗，延迟一下，这样更像。
+                                setTimeout(function(){
+                                    let achi=document.createElement('div')
+                                    achi.innerHTML=`
+                                        <style type="text/css">
+                                            @keyframes lost_achi_show{
+                                                0%{
+                                                    transform:translateY(100px)
+                                                }
+                                                10%{
+                                                    transform:translateY(0px)
+                                                }
+                                                95%{
+                                                    transform:translateY(0px)
+                                                }
+                                                100%{
+                                                    transform:translateY(100px)
+                                                }
+                                            }
+                            
+                                        </style>
+                                        <div style="z-index: 10000;position:fixed;right: 0px;bottom: 0px;width: 240px; height: 94px;overflow: hidden;">
+                                        <div style="position: relative;width:238px;height:92px;border:1px #121929 solid;background: linear-gradient(#3d3d3d, #121929);transform: translateY(100px);animation-duration: 10s;animation-name: lost_achi_show;animation-timing-function: linear;">
+                                            <div id="Achievement_460" class="Achievement" style="position:absolute;left:14px;top:14px;width:64px;height:64px;filter:hue-rotate(251deg)">
+                                            </div>
+                                            <div style="position:absolute;left:88px;top:22px;color:#d1d8e2;font-size:10pt;">
+                                                你太坏了！
+                                            </div>
+                                            <div style="position:absolute;left:88px;top:50px;width: 136px;color:#a5acb6;font-size:6pt;">
+                                                让糖梅宝宝击杀迷失游魂
+                                            </div>
+                                        </div>
+                                    `
+                                    document.body.append(achi)    
+                                },3000)
+
                             },hurt_time)
                         }
                     }
