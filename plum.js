@@ -243,7 +243,7 @@ class BabyPlum {
                                                 你太坏了！
                                             </div>
                                             <div style="position:absolute;left:88px;top:50px;width: 136px;color:#a5acb6;font-size:6pt;">
-                                                让糖梅宝宝击杀迷失游魂
+                                                让维基的糖梅宝宝触碰迷失游魂
                                             </div>
                                         </div>
                                     `
@@ -501,7 +501,9 @@ plum_leader.anmelement.addEventListener("click",function(){
     
     setTimeout(function(){
         let date = new Date()
-        if(/*mw.config.get("wgPageName") == "挑战/32" || */(date.getMonth() == 3 && date.getDate() == 1 /* 4月1日限定*/)){
+        let after_202304 = date.getFullYear() >= 2023 && date.getMonth() >= 3
+
+        if((after_202304 && mw.config.get("wgPageName") == "挑战/32" )||(date.getMonth() == 3 && date.getDate() == 1)){
             plum_leader.remove()
 
             let p = []
