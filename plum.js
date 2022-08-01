@@ -6,7 +6,7 @@ function reset_animation(el){
     el.style.animation = null;   
 }
 class BabyPlum {
-    constructor(initX, initY, startAnim = true) {
+    constructor(initX, initY, startAnim = true, texture = undefined) {
         //element下包含2个元素，第一个是cross，一个用来定位的十字架，第二个anmelement是梅子宝宝的64x64雪碧图片
         //所有的位移动画附在element上，所有的雪碧图动画附在anmelement上
         let element = document.createElement("div")
@@ -17,8 +17,12 @@ class BabyPlum {
             `<div style="position: absolute;left: -50px;top: 0;width: 100px;height: 1px;background-color: green;"></div>
             <div style="position: absolute;left: 0px;top: -50;width: 1px;height: 100px;background-color: green;"></div>`
         let anmelement = document.createElement("div")
-        anmelement.style = "position: absolute;left: 0px;top: 0;"
-
+        anmelement.style.position = 'absolute'
+        anmelement.style.left = '0px'
+        anmelement.style.top = '0px'
+        if(texture){
+            anmelement.style.background = 'url(' + texture + ')'
+        }
 
         element.appendChild(cross)
         element.appendChild(anmelement)
@@ -214,8 +218,9 @@ class BabyPlum {
                                     return
                                 }
                                 s.death=true
+
                                 // 小罗死了！仿steam成就弹窗，延迟一下，这样更像。
-                                setTimeout(function(){
+                                /*setTimeout(function(){
                                     let achi=document.createElement('div')
                                     achi.innerHTML=`
                                         <style type="text/css">
@@ -248,7 +253,7 @@ class BabyPlum {
                                         </div>
                                     `
                                     document.body.append(achi)    
-                                },3000)
+                                },3000)*/
 
                             },hurt_time)
                         }
@@ -395,7 +400,16 @@ class BabyPlum {
     }
 }
 
-let plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))),false)
+let Delirium_plum_texture = "https://huiji-public.huijistatic.com/isaac/uploads/4/4e/Anm2_resources-dlc3_gfx_bosses_afterbirthplus_deliriumforms_repentance_babyplum.png"
+
+let plum_leader
+if(mw.config.get("wgPageName") == '实体/412'){
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))),false,Delirium_plum_texture)
+}else{
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))),false)
+}
+
+
 document.body.appendChild(plum_leader.element)
 /*
 灰机最近改版以后，导航栏的宽度已经固定为50了，所以不用实时更新
@@ -511,7 +525,8 @@ plum_leader.anmelement.addEventListener("click",function(){
             for(let i=0;i<30 /* 好多好多的大可爱 */;i++){
                 setTimeout(
                     function(){
-                        let plum = new BabyPlum(Math.random() * (document.body.clientWidth - 200) + 100, 500 + (huijiApp.isApp ? -100 : 0), true)
+                        let plum = Math.random() < 0.05 ? new BabyPlum(Math.random() * (document.body.clientWidth - 200) + 100, 500 + (huijiApp.isApp ? -100 : 0), true,Delirium_plum_texture)
+                            :new BabyPlum(Math.random() * (document.body.clientWidth - 200) + 100, 500 + (huijiApp.isApp ? -100 : 0), true)
                         p.push(plum)
 
                         let walk_func = function(){
@@ -548,7 +563,13 @@ plum_leader.anmelement.addEventListener("click",function(){
         //create plum
         plum_leader.remove()
 
-        let p = new BabyPlum(100, 500 + (huijiApp.isApp ? -100 : 0), true)
+        let p
+        if(mw.config.get("wgPageName") == '实体/412'){
+            p = new BabyPlum(100, 500 + (huijiApp.isApp ? -100 : 0), true, Delirium_plum_texture)
+        }else{
+            p = new BabyPlum(100, 500 + (huijiApp.isApp ? -100 : 0), true)
+        }
+
         window.baby_plum = p
         document.body.appendChild(p.element)
 
