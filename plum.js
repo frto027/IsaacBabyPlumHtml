@@ -515,7 +515,11 @@ plum_leader.anmelement.addEventListener("click",function(){
     
     setTimeout(function(){
         let date = new Date()
-        let after_202304 = date.getFullYear() >= 2023 && date.getMonth() >= 3
+
+        if(window.enableMoveChara){
+            window.enableMoveChara()
+        }
+        
 
         if((after_202304 && mw.config.get("wgPageName") == "挑战/32" )||(date.getMonth() == 3 && date.getDate() == 1)){
             plum_leader.remove()
