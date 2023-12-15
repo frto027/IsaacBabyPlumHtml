@@ -1,4 +1,5 @@
-let document_nav_toolbar = document.getElementById("content-actions")
+var huijiApp = huijiApp || {isApp:false};
+let leader_y_pos = 115
 
 function reset_animation(el){
     el.style.animation = 'none';
@@ -404,25 +405,13 @@ let Delirium_plum_texture = "https://huiji-public.huijistatic.com/isaac/uploads/
 
 let plum_leader
 if(mw.config.get("wgPageName") == '实体/412'){
-    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))),false,Delirium_plum_texture)
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos),false,Delirium_plum_texture)
 }else{
-    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))),false)
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos),false)
 }
 
 
 document.body.appendChild(plum_leader.element)
-/*
-灰机最近改版以后，导航栏的宽度已经固定为50了，所以不用实时更新
-
-plum_leader.c_setBeforeChangeCallback(function(){
-    if(document_nav_toolbar){
-        let target_height = (huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50)))
-        if(document_nav_toolbar.clientHeight > 1){//不响应高度0的情况，避免在鼠标下滚的时候发生重绘
-            plum_leader.setPosition(100, target_height, false)
-        }
-    }
-})
-*/
 
 function random_move_when_click(){
     let height_min = 300, height_max = document.body.clientHeight - 300
@@ -490,7 +479,7 @@ setTimeout(function(){
         plum_leader.active_status = "timeout"
     }
 
-    plum_leader.c_goto(-100,(huijiApp.isApp ? 40 : (90 + (document_nav_toolbar ? document_nav_toolbar.clientHeight : 50))))
+    plum_leader.c_goto(-100,(huijiApp.isApp ? 40 : leader_y_pos))
     
     setTimeout(function(){
         plum_leader.remove()
@@ -521,7 +510,7 @@ plum_leader.anmelement.addEventListener("click",function(){
         }
         
 
-        if((after_202304 && mw.config.get("wgPageName") == "挑战/32" )||(date.getMonth() == 3 && date.getDate() == 1)){
+        if((mw.config.get("wgPageName") == "挑战/32" )||(date.getMonth() == 3 && date.getDate() == 1)){
             plum_leader.remove()
 
             let p = []
