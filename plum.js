@@ -1,6 +1,8 @@
 var huijiApp = huijiApp || {isApp:false};
 let leader_y_pos = 115
 
+let leader_move_initial_offset = 64
+
 function reset_animation(el){
     el.style.animation = 'none';
     el.offsetHeight; /* trigger reflow */
@@ -404,10 +406,33 @@ class BabyPlum {
 let Delirium_plum_texture = "https://huiji-public.huijistatic.com/isaac/uploads/4/4e/Anm2_resources-dlc3_gfx_bosses_afterbirthplus_deliriumforms_repentance_babyplum.png"
 
 let plum_leader
-if(mw.config.get("wgPageName") == '实体/412'){
-    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos),false,Delirium_plum_texture)
+
+let page_name = mw.config.get("wgPageName")
+
+{
+    // 默认出现概率5%，在大可爱的页面必定出现。激活后，其它页面的出现概率变为100%，在30秒后开始逐渐降低，直到总第120秒降为0%
+    // 此外，保底概率5%
+    let rate = 0.05 // default rate
+    let last_active_time = localStorage.getItem("plum_baby_window_active_time")
+    if(last_active_time){
+        let time_delta_sec = (new Date().getTime() - last_active_time) / 1000
+        if(time_delta_sec < 180){
+            rate = 1
+        }/*else if(time_delta_sec < 120){
+            time_delta_sec -= 30
+            rate = (90 - time_delta_sec) / 90
+        }*/
+    }
+    if(rate < 0.05) rate = 0.05
+    if(page_name == '实体/908') rate = 1
+    if(Math.random() > rate)
+        return
+}
+
+if(page_name == '实体/412'){
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos) - leader_move_initial_offset, false,Delirium_plum_texture)
 }else{
-    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos),false)
+    plum_leader = new BabyPlum(100,(huijiApp.isApp ? 40 : leader_y_pos) - leader_move_initial_offset,false)
 }
 
 
@@ -470,7 +495,14 @@ function plum_baby_limit_to_screen(){
         window.baby_plum.c_goto(x,y)
 }
 
-plum_leader.active_status = "idle"// idle/timeout/actived
+plum_leader.active_status = "before_idle"// idle/timeout/actived/before_idle
+
+$(plum_leader.element).animate({top:leader_move_initial_offset}, {
+    duration:2000,
+    complete:function(){
+        plum_leader.active_status = "idle"
+    }
+})
 
 setTimeout(function(){
     if(plum_leader.active_status != "idle"){
@@ -479,12 +511,12 @@ setTimeout(function(){
         plum_leader.active_status = "timeout"
     }
 
-    plum_leader.c_goto(-100,(huijiApp.isApp ? 40 : leader_y_pos))
+    plum_leader.c_goto(-100,(huijiApp.isApp ? 40 : leader_y_pos) - leader_move_initial_offset)
     
     setTimeout(function(){
         plum_leader.remove()
     },2000)
-},8*1000)
+},10*1000)
 
 
 
