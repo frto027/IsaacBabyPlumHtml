@@ -409,8 +409,41 @@ let plum_leader
 
 let page_name = mw.config.get("wgPageName")
 
+let inform_div = document.getElementById("baby_plum_say")
+
+if(inform_div){
+    if(inform_div.parentElement){
+        inform_div.parentElement.removeChild(inform_div)
+    }
+
+    if(inform_div.style.display == "none"){
+        inform_div.style.display = ""
+    }
+
+    informer_plum = new BabyPlum(100, 300, true)
+    document.body.appendChild(informer_plum.element)
+    informer_plum.element.style.zIndex = 10000
+    let div = document.createElement("div")
+    div.appendChild(inform_div)
+    if(inform_div.getAttribute("data-follow") == "1"){
+        div.style.setProperty("transform", "scale(0.5) translate(32px, 128px)")
+        informer_plum.anmelement.appendChild(div)    
+    }else{
+        informer_plum.element.appendChild(div)
+    }
+
+    informer_plum.c_hello(true)
+
+    informer_plum.anmelement.addEventListener("click",function(){
+        informer_plum.c_hello(false)
+        informer_plum.c_bye()
+    })
+
+    return
+}
+
 {
-    // 默认出现概率5%，在大可爱的页面必定出现。激活后，其它页面的出现概率变为100%，在30秒后开始逐渐降低，直到总第120秒降为0%
+    // 默认出现概率5%，在大可爱的页面必定出现。激活后，3分钟内其它页面的出现概率变为100%
     // 此外，保底概率5%
     let rate = 0.05 // default rate
     let last_active_time = localStorage.getItem("plum_baby_window_active_time")
@@ -418,10 +451,7 @@ let page_name = mw.config.get("wgPageName")
         let time_delta_sec = (new Date().getTime() - last_active_time) / 1000
         if(time_delta_sec < 180){
             rate = 1
-        }/*else if(time_delta_sec < 120){
-            time_delta_sec -= 30
-            rate = (90 - time_delta_sec) / 90
-        }*/
+        }
     }
     if(rate < 0.05) rate = 0.05
     if(page_name == '实体/908') rate = 1
